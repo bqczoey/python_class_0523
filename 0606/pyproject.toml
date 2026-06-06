@@ -1,13 +1,7 @@
 [project]
-name = "python-class-0523"
+name = "0606"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
-
-[tool.uv.workspace]
-members = [
-    "0523",
-    "0606",
-]
