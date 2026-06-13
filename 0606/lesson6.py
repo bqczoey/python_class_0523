@@ -18,7 +18,8 @@ def main():
             # list[dict] -> DataFrame
             df:DataFrame = pd.DataFrame(data=data)
             
-            output_file = Path(__file__).with_name("youbike_report.pdf")
+            output_file = Path(__file__).with_name("youbike_report.pdf"
+)
 
             report.export_to_pdf(df, output_file)
     else:
