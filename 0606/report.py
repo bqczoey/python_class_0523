@@ -1,22 +1,17 @@
-import requests
-from requests import Response
 import pandas as pd
 from pathlib import Path
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
 
 
 def export_to_pdf(df: pd.DataFrame, output_path: Path) -> None:
-    # 延遲匯入：只有真的要輸出 PDF 時才需要 reportlab
-    try:
-        from reportlab.lib import colors
-        from reportlab.lib.pagesizes import A4, landscape
-        from reportlab.lib.styles import getSampleStyleSheet
-        from reportlab.pdfbase import pdfmetrics
-        from reportlab.pdfbase.cidfonts import UnicodeCIDFont
-        from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
-    except ModuleNotFoundError:
-        print("缺少套件 reportlab，請先安裝：pip install reportlab")
-        return
 
+    
     # 註冊可顯示中文的字型（macOS / Linux 常可直接使用）
     font_name = "STSong-Light"
     pdfmetrics.registerFont(UnicodeCIDFont(font_name))
@@ -84,26 +79,3 @@ def export_to_pdf(df: pd.DataFrame, output_path: Path) -> None:
 
     doc.build(story)
     print(f"PDF 已產生：{output_path}")
-
-def main():
-    # 台北市 YouBike 2.0 的 Web API 網址
-    url = "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json"
-    # 使用 requests 套件裡面的 get 函式，執行後會傳出 Response 的實體
-    response: Response = requests.get(url)
-    if response.status_code == 200: # 使用 Response 裡的 Property 叫 status_code，如果取得的數字是 200 代表下載成功，如果不是則代表下載失敗
-        data:list[dict] = response.json() # 使用 Response 實體的 json() 方法，會傳出 list 的資料結構
-
-        # list[dict] -> DataFrame
-        df = pd.DataFrame(data)
-
-        print(df.head(10))
-        print(df.tail(10))
-
-        output_file = Path(__file__).with_name("youbike_report.pdf")
-        export_to_pdf(df, output_file)
-
-    else:
-        print("下載失敗")
-
-if __name__ == '__main__':
-    main()
